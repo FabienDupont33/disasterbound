@@ -1,0 +1,20 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/world/hameau_layer.gd" id="1_layer"]
+
+[node name="LeHameau" type="Node2D"]
+
+[node name="Surfaces" type="Node2D" parent="."]
+script = ExtResource("1_layer")
+
+[node name="Details" type="Node2D" parent="."]
+script = ExtResource("1_layer")
+layer = 1
+
+[node name="Objects" type="Node2D" parent="."]
+script = ExtResource("1_layer")
+layer = 2
+
+[node name="Effects" type="Node2D" parent="."]
+script = ExtResource("1_layer")
+layer = 3

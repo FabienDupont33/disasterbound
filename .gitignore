@@ -1,0 +1,4 @@
+# Cache Godot 4 et fichiers locaux d’export
+/.godot/
+/android/
+/export_credentials.cfg
