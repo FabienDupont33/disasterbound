@@ -43,6 +43,10 @@ Le plaisir repose sur :
 - Les cartes anciennes **ne s'adaptent pas** au niveau du joueur : elles deviennent faciles avec les améliorations.
 - Les cartes avancées doivent être plus rentables en points de recherche ; éviter que farmer le niveau 1 soit optimal. Formule à équilibrer.
 
+### Apprentissage de la campagne
+
+La campagne introduit progressivement de nouvelles contraintes. Les premiers essais permettent de lire le terrain, le vent et les limites des défenses. Les essais suivants permettent d'adapter le placement et d'exploiter les améliorations permanentes. Une bonne stratégie peut réussir dès la première tentative. La puissance du joueur ne modifie pas la difficulté du scénario.
+
 ## 4. Première campagne : Incendie
 
 ### 4.1 Terrain et monde

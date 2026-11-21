@@ -8,6 +8,11 @@ const VILLAGE := &"village"
 const DIRT := &"dirt"
 const DRY_GRASS := &"dry_grass"
 const ROAD_WIDTH := 10.0
+const RIVER_SOURCE_Y := 72
+const RIVER_END_Y := 360
+const RIVER_HEAD_LENGTH := 33.0
+const HOUSE_ORIGINS := [Vector2(228, 153), Vector2(294, 161), Vector2(282, 217)]
+const HOUSE_SIZE := Vector2(26, 22)
 # Correspond à la nuance chaude au sud-ouest du hameau.
 const DRY_CENTER := Vector2(155, 251)
 const DRY_RADIUS := Vector2(60, 22)
@@ -44,6 +49,8 @@ const ROAD := [
 ]
 
 static var _clearing_polygon := PackedVector2Array(CLEARING)
+static var _water_polygon := river_outline(-1.0, 1.0)
+static var _bank_polygon := river_outline(-1.0, 1.0, 3.0)
 static var _wood_polygons: Array[PackedVector2Array] = [
 	PackedVector2Array(NORTH_WOOD), PackedVector2Array(SOUTH_WOOD), PackedVector2Array(EAST_WOOD),
 ]
@@ -54,11 +61,48 @@ static func river_center(y: float) -> float:
 
 
 static func river_half_width(y: float) -> float:
-	return 26.0 + cos(y / 37.0 + 1.1) * 5.0
+	return (26.0 + cos(y / 37.0 + 1.1) * 5.0) * _river_taper(y)
+
+
+static func _river_taper(y: float) -> float:
+	var end_distance := 1.0 - clampf((y - RIVER_SOURCE_Y) / RIVER_HEAD_LENGTH, 0.0, 1.0)
+	return sqrt(1.0 - end_distance * end_distance)
+
+
+static func river_outline(left: float, right: float, margin: float = 0.0) -> PackedVector2Array:
+	var outline := PackedVector2Array()
+	for y in range(RIVER_SOURCE_Y, int(SIZE.y) + 1, 3):
+		outline.append(_river_edge(y, left, -margin))
+	for y in range(int(SIZE.y), RIVER_SOURCE_Y, -3):
+		outline.append(_river_edge(y, right, margin))
+	return outline
+
+
+static func _river_edge(y: float, side: float, margin: float) -> Vector2:
+	return Vector2(roundf(river_center(y) + side * river_half_width(y) + margin * _river_taper(y)), y)
+
+
+static func distance_to_water(point: Vector2) -> float:
+	if is_water(point):
+		return 0.0
+	var closest := INF
+	for i in _water_polygon.size():
+		var next := (i + 1) % _water_polygon.size()
+		var edge := Geometry2D.get_closest_point_to_segment(point, _water_polygon[i], _water_polygon[next])
+		closest = minf(closest, point.distance_squared_to(edge))
+	return sqrt(closest)
+
+
+static func is_water(point: Vector2) -> bool:
+	return _near_river(point) and Geometry2D.is_point_in_polygon(point, _water_polygon)
+
+
+static func _near_river(point: Vector2) -> bool:
+	return point.y >= RIVER_SOURCE_Y and point.y <= SIZE.y and absf(point.x - river_center(point.y)) <= 40.0
 
 
 static func terrain_at(point: Vector2) -> StringName:
-	if absf(point.x - river_center(point.y)) <= river_half_width(point.y):
+	if is_water(point):
 		return WATER
 	if Geometry2D.is_point_in_polygon(point, _clearing_polygon):
 		return VILLAGE
@@ -72,8 +116,7 @@ static func fire_terrain_at(point: Vector2) -> StringName:
 	var terrain := terrain_at(point)
 	if terrain != MEADOW:
 		return terrain
-	var bank_distance := absf(point.x - river_center(point.y)) - river_half_width(point.y)
-	if bank_distance <= 4.0:
+	if _near_river(point) and Geometry2D.is_point_in_polygon(point, _bank_polygon):
 		return DIRT
 	if point.y >= 160.0 and point.y <= 216.0 and point.x <= 362.0:
 		for i in range(1, ROAD.size()):

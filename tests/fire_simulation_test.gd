@@ -14,21 +14,21 @@ func _initialize() -> void:
 	_check(simulation.ignite(settings.initial_position), "Allumage en forêt")
 	for point: Vector2 in [Vector2(8, 208), Vector2(250, 185), Vector2(Map.river_center(120), 120)]:
 		_check(not simulation.ignite(point), "Allumage bloqué à %s" % point)
-	for i in 550:
+	for i in 1700:
 		simulation.step()
 	var meadow_burned := false
-	var crossed_river := false
+	var east_wood_burned := false
 	for y in simulation.grid.y:
-		var river_x := Map.river_center((y + 0.5) * Simulation.CELL_SIZE)
 		for x in simulation.grid.x:
 			var i := y * simulation.grid.x + x
 			if simulation.state[i] != Simulation.Burn.INTACT:
 				meadow_burned = meadow_burned or simulation.terrain[i] == Map.MEADOW
-				crossed_river = crossed_river or (x + 0.5) * Simulation.CELL_SIZE > river_x
+				east_wood_burned = east_wood_burned or (
+					x * Simulation.CELL_SIZE >= 545 and simulation.terrain[i] == Map.FOREST)
 				if not settings.terrain_profiles.has(StringName(simulation.terrain[i])):
 					_check(false, "Propagation sur terrain ininflammable")
 	_check(meadow_burned, "Propagation de la forêt vers la prairie")
-	_check(not crossed_river, "Rivière infranchissable")
+	_check(east_wood_burned, "La propagation atteint la forêt est en contournant la source")
 	_check(simulation.state[simulation.index_at(settings.initial_position)] == Simulation.Burn.CHARRED,
 			"Épuisement et carbonisation")
 	_check(not simulation.ignite(settings.initial_position), "Réallumage impossible sans combustible")

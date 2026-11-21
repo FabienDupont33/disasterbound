@@ -34,9 +34,9 @@ float tongue(vec2 p, float strength, float spacing, float phase_offset) {
 void fragment() {
 	vec2 pixel = floor(map_position);
 	vec2 uv = (pixel + 0.5) / field_size;
-	vec2 field = texture(fire_data, uv).rg;
+	vec3 field = texture(fire_data, uv).rgb;
 	float mask = texture(terrain_mask, uv).r;
-	if (max(field.r, field.g) < 0.015 || mask < 0.5) {
+	if (max(max(field.r, field.g), field.b) < 0.015 || mask < 0.5) {
 		discard;
 	}
 	float speck = grain(pixel);
@@ -59,7 +59,10 @@ void fragment() {
 	fire_color = mix(fire_color, vec3(1.0, 0.95, 0.67), spark);
 	float fire_alpha = max(bed * (0.48 + patches * 0.31), max(glow, spark));
 	float ash_alpha = ash * (0.75 + patches * 0.13);
+	float damp = smoothstep(0.015, 0.38, field.b) * (0.34 + speck * 0.13);
 	float alpha = fire_alpha + ash_alpha * (1.0 - fire_alpha);
-	vec3 color = (fire_color * fire_alpha + ash_color * ash_alpha * (1.0 - fire_alpha)) / max(alpha, 0.001);
-	COLOR = vec4(color, alpha * mask);
+	vec3 color = fire_color * fire_alpha + ash_color * ash_alpha * (1.0 - fire_alpha);
+	color += vec3(0.095, 0.28, 0.25) * damp * (1.0 - alpha);
+	alpha += damp * (1.0 - alpha);
+	COLOR = vec4(color / max(alpha, 0.001), alpha * mask);
 }

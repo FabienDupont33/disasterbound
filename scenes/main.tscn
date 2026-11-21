@@ -1,19 +1,31 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=16 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/prototype_world.tscn" id="1_world"]
 [ext_resource type="Script" path="res://scripts/core/map_camera.gd" id="2_camera"]
 [ext_resource type="Script" path="res://scripts/fire/fire_preview.gd" id="3_preview"]
 [ext_resource type="Script" path="res://scripts/fire/fire_renderer.gd" id="4_fire"]
 [ext_resource type="Script" path="res://resources/balance/fire_configuration.gd" id="5_config"]
+[ext_resource type="Script" path="res://scripts/defenses/water_cannon_renderer.gd" id="6_cannon"]
+[ext_resource type="Script" path="res://resources/balance/water_cannon_configuration.gd" id="7_cannon_config"]
+[ext_resource type="Script" path="res://resources/balance/attempt_configuration.gd" id="8_attempt"]
+[ext_resource type="PackedScene" path="res://scenes/ui/attempt_panel.tscn" id="9_panel"]
+[ext_resource type="PackedScene" path="res://scenes/ui/fire_technology_panel.tscn" id="10_technology"]
+[ext_resource type="PackedScene" path="res://scenes/ui/equipment_bar.tscn" id="11_equipment"]
 
 [sub_resource type="Resource" id="Resource_fire"]
 script = ExtResource("5_config")
 
+[sub_resource type="Resource" id="Resource_cannon"]
+script = ExtResource("7_cannon_config")
+
+[sub_resource type="Resource" id="Resource_attempt"]
+script = ExtResource("8_attempt")
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_status"]
 content_margin_left = 8.0
-content_margin_top = 3.0
+content_margin_top = 0.0
 content_margin_right = 8.0
-content_margin_bottom = 3.0
+content_margin_bottom = 0.0
 bg_color = Color(0.08, 0.15, 0.12, 0.91)
 corner_radius_top_left = 3
 corner_radius_top_right = 3
@@ -31,21 +43,26 @@ script = ExtResource("2_camera")
 [node name="FirePreview" type="Node2D" parent="."]
 script = ExtResource("3_preview")
 configuration = SubResource("Resource_fire")
+cannon_configuration = SubResource("Resource_cannon")
+attempt_configuration = SubResource("Resource_attempt")
 
 [node name="FireRenderer" type="Node2D" parent="FirePreview"]
 script = ExtResource("4_fire")
 
+[node name="CannonRenderer" type="Node2D" parent="FirePreview"]
+script = ExtResource("6_cannon")
+
 [node name="TestOverlay" type="CanvasLayer" parent="FirePreview"]
+
+[node name="AttemptPanel" parent="FirePreview/TestOverlay" instance=ExtResource("9_panel")]
 
 [node name="Status" type="Label" parent="FirePreview/TestOverlay"]
 anchor_left = 1.0
-anchor_top = 1.0
 anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -190.0
-offset_top = -30.0
-offset_right = -8.0
-offset_bottom = -8.0
+offset_left = -442.0
+offset_top = 9.0
+offset_right = -32.0
+offset_bottom = 26.0
 grow_horizontal = 0
 grow_vertical = 0
 mouse_filter = 0
@@ -54,3 +71,7 @@ theme_override_font_sizes/font_size = 11
 theme_override_styles/normal = SubResource("StyleBoxFlat_status")
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="EquipmentBar" parent="FirePreview/TestOverlay" instance=ExtResource("11_equipment")]
+
+[node name="FireTechnologyPanel" parent="FirePreview/TestOverlay" instance=ExtResource("10_technology")]

@@ -1,0 +1,132 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/fire_technology_panel.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/ui/fire_technology_graph.gd" id="2"]
+
+[sub_resource type="Theme" id="Theme_technology"]
+default_font_size = 12
+
+[sub_resource type="StyleBoxFlat" id="Style_shell"]
+bg_color = Color(0.075, 0.13, 0.16, 1)
+border_width_left = 2
+border_width_right = 2
+border_width_top = 2
+border_width_bottom = 2
+border_color = Color(0.34, 0.47, 0.45, 1)
+content_margin_left = 12.0
+content_margin_right = 12.0
+content_margin_top = 11.0
+content_margin_bottom = 11.0
+
+[sub_resource type="StyleBoxFlat" id="Style_details"]
+bg_color = Color(0.12, 0.20, 0.23, 1)
+content_margin_left = 11.0
+content_margin_right = 11.0
+content_margin_top = 11.0
+content_margin_bottom = 11.0
+
+[node name="FireTechnologyPanel" type="ColorRect"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.04, 0.08, 0.09, 0.9)
+theme = SubResource("Theme_technology")
+script = ExtResource("1")
+
+[node name="Panel" type="PanelContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 13.0
+offset_right = -16.0
+offset_bottom = -13.0
+theme_override_styles/panel = SubResource("Style_shell")
+
+[node name="Body" type="VBoxContainer" parent="Panel"]
+layout_mode = 2
+theme_override_constants/separation = 7
+
+[node name="Header" type="HBoxContainer" parent="Panel/Body"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Title" type="Label" parent="Panel/Body/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.97, 0.84, 0.63, 1)
+theme_override_font_sizes/font_size = 21
+text = "Sphérier technologique"
+
+[node name="Balance" type="Label" parent="Panel/Body/Header"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.97, 0.84, 0.63, 1)
+
+[node name="Recenter" type="Button" parent="Panel/Body/Header"]
+layout_mode = 2
+focus_mode = 0
+text = "Recentrer"
+
+[node name="Close" type="Button" parent="Panel/Body/Header"]
+layout_mode = 2
+focus_mode = 0
+text = "Retour"
+
+[node name="Content" type="HBoxContainer" parent="Panel/Body"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 10
+
+[node name="Graph" type="Control" parent="Panel/Body/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+clip_contents = true
+script = ExtResource("2")
+
+[node name="Details" type="PanelContainer" parent="Panel/Body/Content"]
+custom_minimum_size = Vector2(190, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("Style_details")
+
+[node name="Body" type="VBoxContainer" parent="Panel/Body/Content/Details"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="Panel/Body/Content/Details/Body"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.97, 0.84, 0.63, 1)
+autowrap_mode = 2
+
+[node name="Effect" type="Label" parent="Panel/Body/Content/Details/Body"]
+layout_mode = 2
+autowrap_mode = 2
+
+[node name="Rank" type="Label" parent="Panel/Body/Content/Details/Body"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.56, 0.83, 0.79, 1)
+
+[node name="Benefit" type="Label" parent="Panel/Body/Content/Details/Body"]
+layout_mode = 2
+autowrap_mode = 2
+
+[node name="Requires" type="Label" parent="Panel/Body/Content/Details/Body"]
+layout_mode = 2
+size_flags_vertical = 3
+autowrap_mode = 2
+
+[node name="Buy" type="Button" parent="Panel/Body/Content/Details/Body"]
+layout_mode = 2
+focus_mode = 0
+
+[node name="Footer" type="HBoxContainer" parent="Panel/Body"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Help" type="Label" parent="Panel/Body/Footer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Glisser · Molette pour zoomer"
+
+[node name="Notice" type="Label" parent="Panel/Body/Footer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.97, 0.74, 0.56, 1)
