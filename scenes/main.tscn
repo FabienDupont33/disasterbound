@@ -1,7 +1,24 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/prototype_world.tscn" id="1_world"]
 [ext_resource type="Script" path="res://scripts/core/map_camera.gd" id="2_camera"]
+[ext_resource type="Script" path="res://scripts/fire/fire_preview.gd" id="3_preview"]
+[ext_resource type="Script" path="res://scripts/fire/fire_renderer.gd" id="4_fire"]
+[ext_resource type="Script" path="res://resources/balance/fire_configuration.gd" id="5_config"]
+
+[sub_resource type="Resource" id="Resource_fire"]
+script = ExtResource("5_config")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_status"]
+content_margin_left = 8.0
+content_margin_top = 3.0
+content_margin_right = 8.0
+content_margin_bottom = 3.0
+bg_color = Color(0.08, 0.15, 0.12, 0.91)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_left = 3
+corner_radius_bottom_right = 3
 
 [node name="Main" type="Node2D"]
 
@@ -10,3 +27,30 @@
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(320, 180)
 script = ExtResource("2_camera")
+
+[node name="FirePreview" type="Node2D" parent="."]
+script = ExtResource("3_preview")
+configuration = SubResource("Resource_fire")
+
+[node name="FireRenderer" type="Node2D" parent="FirePreview"]
+script = ExtResource("4_fire")
+
+[node name="TestOverlay" type="CanvasLayer" parent="FirePreview"]
+
+[node name="Status" type="Label" parent="FirePreview/TestOverlay"]
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -190.0
+offset_top = -30.0
+offset_right = -8.0
+offset_bottom = -8.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 0
+theme_override_colors/font_color = Color(0.98, 0.94, 0.80, 1.0)
+theme_override_font_sizes/font_size = 11
+theme_override_styles/normal = SubResource("StyleBoxFlat_status")
+horizontal_alignment = 1
+vertical_alignment = 1

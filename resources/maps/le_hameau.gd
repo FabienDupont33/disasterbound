@@ -5,6 +5,12 @@ const MEADOW := &"meadow"
 const FOREST := &"forest"
 const WATER := &"water"
 const VILLAGE := &"village"
+const DIRT := &"dirt"
+const DRY_GRASS := &"dry_grass"
+const ROAD_WIDTH := 10.0
+# Correspond à la nuance chaude au sud-ouest du hameau.
+const DRY_CENTER := Vector2(155, 251)
+const DRY_RADIUS := Vector2(60, 22)
 
 const NORTH_WOOD := [
 	Vector2(0, 0), Vector2(214, 0), Vector2(210, 20), Vector2(199, 28),
@@ -37,6 +43,11 @@ const ROAD := [
 	Vector2(306, 203), Vector2(332, 198), Vector2(349, 182), Vector2(356, 166),
 ]
 
+static var _clearing_polygon := PackedVector2Array(CLEARING)
+static var _wood_polygons: Array[PackedVector2Array] = [
+	PackedVector2Array(NORTH_WOOD), PackedVector2Array(SOUTH_WOOD), PackedVector2Array(EAST_WOOD),
+]
+
 
 static func river_center(y: float) -> float:
 	return 458.0 + sin(y / 49.0 + 0.65) * 35.0 + sin(y / 24.0) * 8.0
@@ -49,9 +60,26 @@ static func river_half_width(y: float) -> float:
 static func terrain_at(point: Vector2) -> StringName:
 	if absf(point.x - river_center(point.y)) <= river_half_width(point.y):
 		return WATER
-	if Geometry2D.is_point_in_polygon(point, PackedVector2Array(CLEARING)):
+	if Geometry2D.is_point_in_polygon(point, _clearing_polygon):
 		return VILLAGE
-	for wood: Array in WOODS:
-		if Geometry2D.is_point_in_polygon(point, PackedVector2Array(wood)):
+	for wood in _wood_polygons:
+		if Geometry2D.is_point_in_polygon(point, wood):
 			return FOREST
+	return MEADOW
+
+
+static func fire_terrain_at(point: Vector2) -> StringName:
+	var terrain := terrain_at(point)
+	if terrain != MEADOW:
+		return terrain
+	var bank_distance := absf(point.x - river_center(point.y)) - river_half_width(point.y)
+	if bank_distance <= 4.0:
+		return DIRT
+	if point.y >= 160.0 and point.y <= 216.0 and point.x <= 362.0:
+		for i in range(1, ROAD.size()):
+			var nearest := Geometry2D.get_closest_point_to_segment(point, ROAD[i - 1], ROAD[i])
+			if point.distance_squared_to(nearest) <= pow(ROAD_WIDTH * 0.5 + 0.5, 2):
+				return DIRT
+	if ((point - DRY_CENTER) / DRY_RADIUS).length_squared() < 1.0:
+		return DRY_GRASS
 	return MEADOW

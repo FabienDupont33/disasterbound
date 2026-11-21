@@ -40,7 +40,7 @@ func _draw_surfaces() -> void:
 	# Les taches restent larges et espacées pour laisser respirer la prairie.
 	for patch: Array in [
 		[Vector2(105, 142), Vector2(93, 43), Color("#9ec35c")],
-		[Vector2(155, 251), Vector2(87, 39), Color("#a3c562")],
+		[Map.DRY_CENTER, Vector2(87, 39), Color("#a3c562")],
 		[Vector2(323, 59), Vector2(118, 49), Color("#a1c660")],
 		[Vector2(311, 316), Vector2(124, 39), Color("#85b352")],
 		[Vector2(548, 277), Vector2(76, 38), Color("#a4c567")],
@@ -50,7 +50,7 @@ func _draw_surfaces() -> void:
 		draw_colored_polygon(PackedVector2Array(wood), WOOD_FLOOR)
 	draw_colored_polygon(PackedVector2Array(Map.CLEARING), CLEARING)
 	var road := PackedVector2Array(Map.ROAD)
-	draw_polyline(road, Color("#b89758"), 10.0)
+	draw_polyline(road, Color("#b89758"), Map.ROAD_WIDTH)
 	draw_polyline(road, Color("#e3c484"), 6.0)
 	for path: Array in [
 		[Vector2(241, 174), Vector2(240, 182), Vector2(244, 188)],
